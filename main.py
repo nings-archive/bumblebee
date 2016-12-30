@@ -48,10 +48,11 @@ def main():
     time.sleep(0.001)
 
 print('''
-Hold down: 
+bumblebee by ning. Hold down: 
 '{}' for left click      '{}' for right;
 '{}' for alt-pings       '{}' for ctrl-alt-pings;
-'{}' for script exit.'''.format(
+'{}' for script exit.
+'''.format(
     CONFIG['left_click'],
     CONFIG['right_click'],
     CONFIG['alt_ping'],
