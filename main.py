@@ -18,13 +18,13 @@ def right_click():
     pyautogui.click(button='right')
     pass
 
-def alt_click():
+def alt_ping():
     keyboard.send('alt', do_release=False)
     left_click()
 
-def ctrl_alt_click():
+def ctrl_alt_ping():
     keyboard.send('ctrl', do_release=False)
-    alt_click()
+    alt_ping()
 
 def reset():
     keyboard.send('alt', do_press=False, do_release=True)
@@ -36,10 +36,10 @@ def main():
     elif keyboard.is_pressed(CONFIG['right_click']):
         right_click()
     elif keyboard.is_pressed(CONFIG['alt_ping']):
-        alt_click()
+        alt_ping()
         reset()
     elif keyboard.is_pressed(CONFIG['ctrl_alt_ping']):
-        ctrl_alt_click()
+        ctrl_alt_ping()
         reset()
     elif keyboard.is_pressed(CONFIG['terminate']):
         play_exit()
