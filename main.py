@@ -2,10 +2,6 @@ import sys, time
 import pyautogui, pygame.mixer, keyboard
 
 pygame.mixer.init()
-'''
-BUMBLEBEE = sys.path[0] + '/bumblebee.mp3'
-pygame.mixer.music.load(BUMBLEBEE)
-'''
 EXIT = sys.path[0] + '/exit.ogg'
 
 def play_exit():
@@ -20,12 +16,6 @@ def right_click():
     pyautogui.click(button='right')
     pass
 
-def alt_ping():
-    pass
-
-def ctrl_alt_ping():
-    pass
-
 def main():
     if keyboard.is_pressed('['):
         left_click()
@@ -37,5 +27,6 @@ def main():
         sys.exit()
     time.sleep(0.025)
 
+print("Hold down '[' for left click, ']' for right; '\\' exits the script.")
 while True:
     main()
