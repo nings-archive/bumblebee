@@ -90,11 +90,9 @@ def main():
         is_playing = False
     
     if (is_playing is not was_playing) and (is_playing is True):
-        print('unpausing')
         unpause_bumblebee()
         was_playing = is_playing
     elif (is_playing is not was_playing) and (is_playing is False):
-        print('pausing')
         pause_bumblebee()
         was_playing = is_playing
 
