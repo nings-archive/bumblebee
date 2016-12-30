@@ -17,14 +17,16 @@ def right_click():
     pass
 
 def alt_click():
-    pyautogui.keyDown('alt')
+    keyboard.send('alt', do_release=False)
     left_click()
-    pyautogui.keyUp('alt')
 
 def ctrl_alt_click():
-    pyautogui.keyDown('ctrl')
+    keyboard.send('ctrl', do_release=False)
     alt_click()
-    pyautogui.keyUp('ctrl')
+
+def reset():
+    keyboard.send('alt', do_press=False, do_release=True)
+    keyboard.send('ctrl', do_press=False, do_release=True)
 
 def main():
     if keyboard.is_pressed('-'):
@@ -33,13 +35,15 @@ def main():
         right_click()
     elif keyboard.is_pressed('['):
         alt_click()
+        reset()
     elif keyboard.is_pressed(']'):
         ctrl_alt_click()
+        reset()
     elif keyboard.is_pressed('\\'):
         play_exit()
         time.sleep(1)
         sys.exit()
-    time.sleep(0.025)
+    time.sleep(0.001)
 
 print('''
 Hold down: 
