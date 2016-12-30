@@ -5,8 +5,8 @@ import pyautogui, pygame.mixer, keyboard
 
 # INITIALISATION
 pygame.mixer.init()
-EXIT = sys.path[0] + '/exit.ogg'
-BUMBLEBEE = sys.path[0] + '/bumblebee.mp3'
+EXIT = 'exit.ogg'
+BUMBLEBEE = 'bumblebee.mp3'
 
 try:
     with open('config.json', 'r') as file:
