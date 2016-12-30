@@ -1,8 +1,10 @@
-import sys, time
+import sys, time, json
 import pyautogui, pygame.mixer, keyboard
 
 pygame.mixer.init()
 EXIT = sys.path[0] + '/exit.ogg'
+with open('config.json', 'r') as file:
+    CONFIG = json.load(file)
 
 def play_exit():
     pygame.mixer.music.stop()
@@ -29,17 +31,17 @@ def reset():
     keyboard.send('ctrl', do_press=False, do_release=True)
 
 def main():
-    if keyboard.is_pressed('-'):
+    if keyboard.is_pressed(CONFIG['left_click']):
         left_click()
-    elif keyboard.is_pressed('='):
+    elif keyboard.is_pressed(CONFIG['right_click']):
         right_click()
-    elif keyboard.is_pressed('['):
+    elif keyboard.is_pressed(CONFIG['alt_ping']):
         alt_click()
         reset()
-    elif keyboard.is_pressed(']'):
+    elif keyboard.is_pressed(CONFIG['ctrl_alt_ping']):
         ctrl_alt_click()
         reset()
-    elif keyboard.is_pressed('\\'):
+    elif keyboard.is_pressed(CONFIG['terminate']):
         play_exit()
         time.sleep(1)
         sys.exit()
@@ -47,8 +49,14 @@ def main():
 
 print('''
 Hold down: 
-'-' for left click      '=' for right;
-'[' for alt-pings       ']' for ctrl-alt-pings;
-'\\' for script exit.''')
+'{}' for left click      '{}' for right;
+'{}' for alt-pings       '{}' for ctrl-alt-pings;
+'{}' for script exit.'''.format(
+    CONFIG['left_click'],
+    CONFIG['right_click'],
+    CONFIG['alt_ping'],
+    CONFIG['ctrl_alt_ping'],
+    CONFIG['terminate']
+    ))
 while True:
     main()
