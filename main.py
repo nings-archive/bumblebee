@@ -12,7 +12,9 @@ try:
     with open('config.json', 'r') as file:
         CONFIG = json.load(file)
 except FileNotFoundError:
-    print('ERROR/FATAL: config.json not found')
+    print('ERROR: config.json not found')
+    time.sleep(5)
+    sys.exit()
 
 global is_playing, was_playing
 is_playing = False
@@ -24,13 +26,17 @@ def load_bumblebee():
         pygame.mixer.music.load(BUMBLEBEE)
         pygame.mixer.music.set_volume(0.5)
     except pygame.error:
-        print('WARNING: exit.ogg not found, no exit sound will be played.')
+        print('ERROR: exit.ogg not found')
+        time.sleep(5)
+        sys.exit()
 
 def load_exit():
     try:
         pygame.mixer.music.load(EXIT)
     except pygame.error:
-        print('WARNING: exit.ogg not found, no exit sound will be played.')
+        print('ERROR: exit.ogg not found')
+        time.sleep(5)
+        sys.exit()
 
 def pause_bumblebee():
     pygame.mixer.music.pause()
