@@ -4,10 +4,6 @@ import sys, time, json
 import pyautogui, pygame.mixer, keyboard
 
 # INITIALISATION
-pygame.mixer.init()
-EXIT = 'exit.ogg'
-BUMBLEBEE = 'bumblebee.mp3'
-
 try:
     with open('config.json', 'r') as file:
         CONFIG = json.load(file)
@@ -16,91 +12,88 @@ except FileNotFoundError:
     time.sleep(5)
     sys.exit()
 
-global is_playing, was_playing
-is_playing = False
-was_playing = False
-
-# MUSIC FUNCTIONS
-def load_bumblebee():
-    try:
-        pygame.mixer.music.load(BUMBLEBEE)
+class Music:
+    def __init__(self):
+        pygame.mixer.init()
+        self.EXIT = 'exit.ogg'
+        self.BUMBLEBEE = 'bumblebee.mp3'
+        pygame.mixer.music.load(self.BUMBLEBEE)
         pygame.mixer.music.set_volume(0.5)
-    except pygame.error:
-        print('ERROR: exit.ogg not found')
-        time.sleep(5)
-        sys.exit()
+        pygame.mixer.music.play(-1)  # -1 repeats indefinitely
+        pygame.mixer.music.pause()
+        self.is_playing = False
+        self.was_playing = False
 
-def load_exit():
-    try:
-        pygame.mixer.music.load(EXIT)
-    except pygame.error:
-        print('ERROR: exit.ogg not found')
-        time.sleep(5)
-        sys.exit()
+    def pause(self):
+        pygame.mixer.music.pause()
 
-def pause_bumblebee():
-    pygame.mixer.music.pause()
+    def resume(self):
+        pygame.mixer.music.unpause()
 
-def unpause_bumblebee():
-    pygame.mixer.music.unpause()
+    def exit(self):
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load(self.EXIT)
+        pygame.mixer.music.play()
+        time.sleep(1)
 
-# MOUSE/KEYBOARD FUNCTIONS
-def play_exit():
-    global is_playing
-    is_playing = False
-    pygame.mixer.music.stop()
-    load_exit()
-    pygame.mixer.music.play()
+class Key_Inputs:
+    def ctrl(click):
+        def press_ctrl(self):
+            keyboard.send('ctrl', do_release=False)
+            click(self)
+            keyboard.send('ctrl', do_press=False, do_release=True)
+        return press_ctrl
 
-def left_click():
-    global is_playing
-    is_playing = True
-    pyautogui.click()
+    def alt(click):
+        def press_alt(self):
+            keyboard.send('alt', do_release=False)
+            click(self)
+            keyboard.send('alt', do_press=False, do_release=True)
+        return press_alt
 
-def right_click():
-    global is_playing
-    is_playing = True
-    pyautogui.click(button='right')
-    pass
+    def left_click(self):
+        pyautogui.click()
 
-def alt_ping():
-    global is_playing
-    is_playing = True
-    keyboard.send('alt', do_release=False)
-    left_click()
-    keyboard.send('alt', do_press=False, do_release=True)
+    def right_click(self):
+        pyautogui.click(button='right')
+    
+    @alt
+    def alt_ping(self):
+        pyautogui.click()
 
-def ctrl_alt_ping():
-    global is_playing
-    is_playing = True
-    keyboard.send('ctrl', do_release=False)
-    alt_ping()
-    keyboard.send('alt', do_press=False, do_release=True)
-    keyboard.send('ctrl', do_press=False, do_release=True)
+    @ctrl
+    @alt
+    def ctrl_alt_ping(self):
+        pyautogui.click()
 
 def main():
-    global is_playing, was_playing
+    music = Music()
+    key_inputs = Key_Inputs()
+
     if keyboard.is_pressed(CONFIG['left_click']):
-        left_click()
+        key_inputs.left_click()
+        music.is_playing = True
     elif keyboard.is_pressed(CONFIG['right_click']):
-        right_click()
+        key_inputs.right_click()
+        music.is_playing = True
     elif keyboard.is_pressed(CONFIG['alt_ping']):
-        alt_ping()
+        key_inputs.alt_ping()
+        music.is_playing = True
     elif keyboard.is_pressed(CONFIG['ctrl_alt_ping']):
-        ctrl_alt_ping()
+        key_inputs.ctrl_alt_ping()
+        music.is_playing = True
     elif keyboard.is_pressed(CONFIG['terminate']):
-        play_exit()
-        time.sleep(1)
+        music.exit()
         sys.exit()
     else:
-        is_playing = False
+        music.is_playing = False  # FIX THIS
     
-    if (is_playing is not was_playing) and (is_playing is True):
-        unpause_bumblebee()
-        was_playing = is_playing
-    elif (is_playing is not was_playing) and (is_playing is False):
-        pause_bumblebee()
-        was_playing = is_playing
+    if (music.is_playing is not music.was_playing) and (music.is_playing is True):
+        music.resume()
+        music.was_playing = music.is_playing
+    elif (music.is_playing is not music.was_playing) and (music.is_playing is False):
+        music.pause()
+        music.was_playing = music.is_playing
 
     time.sleep(0.001)
 
@@ -117,10 +110,6 @@ if __name__ == '__main__':
         CONFIG['ctrl_alt_ping'],
         CONFIG['terminate']
         ))
-
-    load_bumblebee()
-    pygame.mixer.music.play(-1)  # -1 -> repeats indefintiely
-    pause_bumblebee()
 
     while True:
         main()
